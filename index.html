@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f7f8">
+<link rel="manifest" href="./manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="読書進捗">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+
+<title>読書進捗</title>
+<style>
+:root{--bg:#f5f6f7;--card:#fff;--ink:#20252b;--muted:#737b84;--line:#e7e9ec;--green:#159765;--blue:#347fce;--red:#d65353;--accent:#263746}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px}
+button,input{font:inherit}button{cursor:pointer}.app{max-width:680px;margin:auto;min-height:100vh;padding:18px 16px 40px}
+header{display:flex;align-items:flex-end;justify-content:space-between;margin:4px 0 18px;gap:10px}h1{font-size:22px;margin:0;font-weight:750}.date{font-size:17px;font-weight:700;color:var(--ink);background:#e9edf0;padding:8px 12px;border-radius:11px;white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:17px;margin-bottom:13px;box-shadow:0 2px 8px #20252b08}
+.eyebrow{font-size:12px;color:var(--muted);margin-bottom:8px}.big{font-size:34px;font-weight:750;letter-spacing:-1px}.sub{font-size:12px;color:var(--muted)}
+.track{height:9px;border-radius:20px;background:#edf0f2;overflow:hidden;margin:10px 0}.fill{height:100%;border-radius:20px;transition:width .2s}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:15px}.stat strong{display:block;font-size:20px}.stat span{font-size:11px;color:var(--muted)}
+.section-title{font-size:15px;font-weight:700;margin:21px 2px 11px;display:flex;justify-content:space-between;align-items:center}
+.book{display:flex;align-items:center;gap:10px;padding:14px 0;border-top:1px solid var(--line);cursor:pointer}.book:first-of-type{border-top:0}.book-main{flex:1;min-width:0}.book-name{font-weight:700;margin-bottom:7px}.book-meta{font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums}.book-meta b{font-weight:750}.book-gap{font-size:14px;font-weight:750;min-width:42px;text-align:right;font-variant-numeric:tabular-nums}.pct{font-size:18px;font-weight:750;min-width:45px;text-align:right}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}.status{font-size:11px;color:var(--muted);margin-top:5px}
+.green{background:var(--green)}.blue{background:var(--blue)}.red{background:var(--red)}
+.btn{border:0;border-radius:11px;background:var(--accent);color:#fff;padding:12px 15px;font-weight:650}.btn.secondary{background:#edf0f2;color:var(--ink)}.btn.small{padding:8px 11px;font-size:12px}
+.row{display:flex;gap:9px;align-items:center}.between{justify-content:space-between}.detail-head{display:flex;align-items:center;gap:8px;margin-bottom:15px}.back{border:0;background:transparent;padding:5px 0;color:#53606b}.hidden{display:none!important}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:16px}.metric span{font-size:12px;color:var(--muted);display:block}.metric strong{font-size:23px;display:block;margin-top:3px}
+.callout{padding:13px;border-radius:12px;background:#f2f5f7;margin-top:15px}.callout strong{font-size:25px}.callout p{font-size:12px;color:var(--muted);margin:4px 0 0}.detail-pace-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.pace-tile{border-radius:13px;background:#f1f3f5;padding:13px;min-width:0}.pace-tile.primary{background:#edf3f8}.pace-tile span,.pace-tile small{display:block;font-size:11px;color:var(--muted);line-height:1.45}.pace-tile strong{display:block;font-size:25px;line-height:1.35;margin:5px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.pace-tile small{font-size:10px}
+input{width:100%;padding:12px;border:1px solid #d9dee3;border-radius:10px;background:#fff;color:var(--ink)}label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.history{width:100%;border-collapse:collapse;font-size:13px;margin-top:9px}.history th,.history td{text-align:right;padding:10px 5px;border-bottom:1px solid var(--line)}.history th:first-child,.history td:first-child{text-align:left}.history th{color:var(--muted);font-weight:500}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}.navtabs{display:flex;gap:8px;margin:0 0 14px}.navtabs button{flex:1}.day-group{margin-top:13px;border:1px solid var(--line);border-radius:12px;overflow:hidden}.day-heading{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:#edf3f8;border-left:4px solid var(--blue);font-size:14px}.day-heading strong:last-child{color:var(--blue);font-size:16px;font-variant-numeric:tabular-nums}.record-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px 13px;border-top:1px solid var(--line);font-size:13px}.record-name{font-weight:650}.record-pages{font-weight:750;font-variant-numeric:tabular-nums}.empty{color:var(--muted);font-size:13px;padding:16px 0}
+dialog{border:0;border-radius:18px;padding:20px;width:min(92vw,430px);box-shadow:0 12px 50px #0003}dialog::backdrop{background:#17212b66}.dialog-actions{display:flex;gap:8px;margin-top:18px}.dialog-actions button{flex:1}
+footer{font-size:11px;color:var(--muted);text-align:center;margin:22px 0}
+@media(min-width:600px){.app{padding-top:28px}.card{padding:20px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><h1>読書進捗</h1><span class="date" id="periodLabel"></span></header>
+<div class="navtabs"><button class="btn" id="tabHome" onclick="showHome()">作品一覧</button><button class="btn secondary" id="tabHistory" onclick="showHistory()">全体の記録</button></div>
+<main id="home">
+<section class="card">
+  <div class="eyebrow">全体の進捗</div><div class="row between"><div class="big" id="overallPct">—%</div><span class="sub" id="daysLeft"></span></div>
+  <div class="track"><div class="fill" id="overallBar" style="background:var(--accent);width:0"></div></div>
+  <div class="stats"><div class="stat"><strong id="totalPages">—</strong><span>総ページ数</span></div><div class="stat"><strong id="donePages">—</strong><span>読了ページ</span></div><div class="stat"><strong id="leftPages">—</strong><span>残りページ</span></div></div>
+</section>
+<div class="section-title">作品一覧 <button class="btn small" onclick="openBookDialog()">＋ 本を追加</button></div>
+<section class="card" id="bookList"></section>
+<section class="card">
+ <div class="row between"><strong>今日の記録</strong><span class="sub" id="todayLabel"></span></div>
+ <p class="sub">作品を選んで、今日読んだページ数を入力してください。</p>
+ <div id="quickEntries"></div>
+</section>
+</main>
+<main id="allHistory" class="hidden"><section class="card"><div class="row between"><strong>全体の読書記録</strong><span class="sub">日付順</span></div><p class="sub">各作品の入力記録をまとめて表示します。</p><div id="allHistoryBody"></div><div class="empty hidden" id="allHistoryEmpty">記録はまだありません。作品一覧からページ数を入力してください。</div><p class="sub" style="margin-top:14px">※「丸いもののもつ慰め」は開始時点で191ページ読了として計算しています。</p></section></main>
+<main id="detail" class="hidden">
+<div class="detail-head"><button class="back" onclick="showHome()">‹ 一覧に戻る</button></div>
+<section class="card">
+ <div class="eyebrow" id="detailDates"></div>
+ <div class="row between"><h2 id="detailName" style="font-size:22px;margin:0"></h2><div class="big" id="detailPct">—%</div></div>
+ <div class="track" style="height:12px;margin:14px 0 8px"><div class="fill" id="detailBar" style="height:12px"></div></div>
+ <div class="row between" style="font-size:13px;color:var(--muted)"><span>読了 <strong id="detailDone" style="color:var(--ink)"></strong></span><span>全 <strong id="detailTotal" style="color:var(--ink)"></strong></span><span>残 <strong id="detailRemaining" style="color:var(--ink)"></strong></span></div>
+ <div class="detail-pace-grid">
+  <div class="pace-tile"><span>目標との差</span><strong id="gap"></strong><small id="paceStatus"></small></div>
+  <div class="pace-tile primary"><span>必要なペース (/日)</span><strong id="neededRate"></strong><small id="neededNote"></small></div>
+ </div>
+ <div class="row between" style="margin-top:13px"><span class="sub">目標累計</span><strong id="detailTarget"></strong></div>
+ <div class="row between" style="margin-top:7px"><span class="sub">平均目標 (/日)</span><strong id="targetRate"></strong></div>
+</section>
+<section class="card">
+ <div class="row between"><strong>読書記録</strong><button class="btn small" onclick="openEntryDialog(currentId)">＋ 記録</button></div>
+ <table class="history"><thead><tr><th>日付</th><th>その日の実績</th><th>累計</th><th>目標累計</th></tr></thead><tbody id="historyBody"></tbody></table>
+ <div class="empty" id="historyEmpty">記録はまだありません。</div>
+</section>
+<div class="toolbar"><button class="btn secondary" onclick="openBookDialog(currentId)">本の情報を編集</button><button class="btn secondary" onclick="deleteCurrent()">この本を削除</button></div>
+</main>
+<footer>入力したデータはこのブラウザ内に保存されます。</footer>
+</div>
+<dialog id="bookDialog">
+<h3 id="bookDialogTitle" style="margin:0 0 12px">本を追加</h3>
+<label>作品名</label><input id="bookName" placeholder="作品名">
+<div class="formgrid"><div><label>総ページ数</label><input id="bookTotal" type="number" min="1"></div><div><label>現在の読了ページ</label><input id="bookDone" type="number" min="0"></div></div>
+<div class="formgrid"><div><label>読書開始日</label><input id="startDate" type="date"></div><div><label>返却日</label><input id="endDate" type="date"></div></div>
+<div class="dialog-actions"><button class="btn secondary" onclick="bookDialog.close()">キャンセル</button><button class="btn" onclick="saveBook()">保存</button></div>
+</dialog>
+<dialog id="entryDialog">
+<h3 style="margin:0 0 12px">読書記録を入力</h3>
+<label>日付</label><input id="entryDate" type="date">
+<label>読んだページ数（その日の合計）</label><input id="entryPages" type="number" min="0" placeholder="例：35">
+<div class="dialog-actions"><button class="btn secondary" onclick="entryDialog.close()">キャンセル</button><button class="btn" onclick="saveEntry()">保存</button></div>
+</dialog>
+<script>
+const KEY='reading-progress-v3';
+const seed=[
+ {id:'a',name:'アサシン18',total:623,openingDone:0,start:'2026-11-01',end:'2026-11-14',logs:{'2026-11-01':70,'2026-11-02':78,'2026-11-03':6,'2026-11-04':72,'2026-11-05':27,'2026-11-06':43,'2026-11-07':34,'2026-11-08':30}},
+ {id:'b',name:'はいつくばって',total:468,openingDone:0,start:'2026-11-01',end:'2026-11-14',logs:{'2026-11-01':0,'2026-11-02':0,'2026-11-03':106,'2026-11-04':42,'2026-11-05':26,'2026-11-06':16,'2026-11-07':38,'2026-11-08':0}},
+ {id:'c',name:'丸いもののもつ慰め',total:380,openingDone:191,start:'2026-11-01',end:'2026-11-14',logs:{'2026-11-01':0,'2026-11-02':28,'2026-11-03':0,'2026-11-04':0,'2026-11-05':25,'2026-11-06':33,'2026-11-07':18,'2026-11-08':0}}
+];
+let data=load(),currentId=null,editingId=null;
+function load(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(KEY)) || JSON.parse(localStorage.getItem('reading-progress-v2'));
+  if(saved&&Array.isArray(saved.books)){
+   const books=saved.books.map(b=>{
+    const base=seed.find(s=>s.id===b.id);
+    if(!base)return b;
+    return {...base,...b,
+      openingDone:Number(b.openingDone ?? base.openingDone ?? 0),
+      logs:{...base.logs,...(b.logs||{})}
+    };
+   });
+   // If an earlier saved version omitted any of the supplied books, restore those too.
+   seed.forEach(s=>{if(!books.some(b=>b.id===s.id))books.push(s)});
+   const restored={...saved,books};
+   localStorage.setItem(KEY,JSON.stringify(restored));
+   return restored;
+  }
+  const initial={books:seed,asOf:'2026-11-08'};
+  localStorage.setItem(KEY,JSON.stringify(initial));
+  return initial;
+ }catch{
+  return {books:seed,asOf:'2026-11-08'};
+ }
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function today(){let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function fmt(n){return Math.round(n).toLocaleString('ja-JP')}
+function daysInclusive(a,b){return Math.max(1,Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000)+1)}
+function dayIndex(a,d){return Math.max(0,Math.floor((new Date(d+'T00:00:00')-new Date(a+'T00:00:00'))/86400000)+1)}
+function currentDay(b){let t=today();return t<b.start?b.start:t>b.end?b.end:t}
+function sumLogs(b){return Object.values(b.logs||{}).reduce((s,n)=>s+Number(n||0),0)}
+function actual(b){return Math.max(0,Number(b.openingDone??b.done??0)+sumLogs(b))}
+function target(b,date){let days=daysInclusive(b.start,b.end),elapsed=Math.min(days,dayIndex(b.start,date));return Math.round(b.total*elapsed/days)}
+function gap(b,date){return actual(b)-target(b,date)}
+function status(b,date){let g=gap(b,date);return g>10?'green':g< -10?'red':'blue'}
+function statusText(s){return s==='green'?'予定より先行':s==='red'?'予定より遅れ':'おおむね予定通り'}
+function color(s){return s==='green'?'var(--green)':s==='red'?'var(--red)':'var(--blue)'}
+function render(){
+ const books=data.books, total=books.reduce((s,b)=>s+b.total,0),done=books.reduce((s,b)=>s+actual(b),0),left=Math.max(0,total-done);
+ const pct=total?Math.min(100,done/total*100):0;
+ overallPct.textContent=Math.round(pct)+'%';overallBar.style.width=pct+'%';
+ totalPages.textContent=fmt(total);donePages.textContent=fmt(done);leftPages.textContent=fmt(left);
+ let dates=books[0];periodLabel.textContent=dates?`${dates.start.slice(5).replace('-','/')}–${dates.end.slice(5).replace('-','/')}`:'期間未設定';
+ let now=dates?currentDay(dates):today();todayLabel.textContent=now;
+ daysLeft.textContent=dates?`返却日まで ${Math.max(0,Math.ceil((new Date(dates.end)-new Date(now))/86400000))}日`:'';
+ bookList.innerHTML=books.length?'':'<div class="empty">本がまだ登録されていません。</div>';
+ books.forEach(b=>{
+  let p=Math.min(100,actual(b)/b.total*100),s=status(b,currentDay(b));
+  bookList.insertAdjacentHTML('beforeend',`<div class="book" onclick="showDetail('${b.id}')"><div class="book-main"><div class="book-name">${esc(b.name)}</div><div class="track"><div class="fill ${s}" style="width:${p}%"></div></div><div class="row between"><div class="book-meta"><b>${fmt(actual(b))}</b> / ${fmt(b.total)}　残 ${fmt(Math.max(0,b.total-actual(b)))}</div><div class="book-gap" style="color:${color(s)}">${gap(b,currentDay(b))>0?'+':''}${fmt(gap(b,currentDay(b)))}</div></div></div><div class="pct">${Math.round(p)}%</div><span style="color:#9aa1a8">›</span></div>`);
+ });
+ quickEntries.innerHTML='';
+ books.forEach(b=>quickEntries.insertAdjacentHTML('beforeend',`<div class="row between" style="padding:8px 0;border-top:1px solid var(--line)"><span style="font-size:13px">${esc(b.name)}</span><button class="btn small secondary" onclick="openEntryDialog('${b.id}')">入力・修正</button></div>`));
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+if('scrollRestoration' in history)history.scrollRestoration='manual';
+function scrollTopNow(){
+ const reset=()=>{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo({top:0,left:0,behavior:'instant'});};
+ reset();
+ requestAnimationFrame(()=>requestAnimationFrame(reset));
+}
+function setTab(which){tabHome.className=which==='home'?'btn':'btn secondary';tabHistory.className=which==='history'?'btn':'btn secondary'}
+function showHome(){detail.classList.add('hidden');allHistory.classList.add('hidden');home.classList.remove('hidden');currentId=null;setTab('home');render();scrollTopNow()}
+function showHistory(){home.classList.add('hidden');detail.classList.add('hidden');allHistory.classList.remove('hidden');currentId=null;setTab('history');renderAllHistory();scrollTopNow()}
+function showDetail(id){currentId=id;let b=data.books.find(x=>x.id===id);if(!b)return;home.classList.add('hidden');allHistory.classList.add('hidden');detail.classList.remove('hidden');setTab('home');renderDetail();scrollTopNow()}
+function renderDetail(){
+ let b=data.books.find(x=>x.id===currentId);if(!b)return;
+ let d=currentDay(b),a=actual(b),t=target(b,d),g=a-t,remain=Math.max(0,b.total-a),days=Math.max(0,Math.ceil((new Date(b.end+'T00:00:00')-new Date(d+'T00:00:00'))/86400000));
+ let needed=days>0?Math.ceil(remain/days):remain; let s=status(b,d);
+ detailDates.textContent=`${b.start} ～ ${b.end}`;detailName.textContent=b.name;detailPct.textContent=Math.round(Math.min(100,a/b.total*100))+'%';
+ detailBar.style.width=Math.min(100,a/b.total*100)+'%';detailBar.style.background=color(s);
+ detailDone.textContent=fmt(a);detailTotal.textContent=fmt(b.total);detailRemaining.textContent=fmt(remain);detailTarget.textContent=fmt(t);
+ targetRate.textContent=`${fmt(Math.ceil(b.total/daysInclusive(b.start,b.end)))}ページ`;
+ neededRate.textContent=`${fmt(needed)}ページ`;neededNote.textContent=days>0?`残り${days}日（今日を含まず）で読み切る場合の目安です。`:'返却日当日です。残りページを確認してください。';
+ document.getElementById('gap').textContent=`${g>0?'+':''}${fmt(g)}ページ`;document.getElementById('gap').style.color=color(s);document.getElementById('paceStatus').textContent=statusText(s);
+ const historyBodyEl=document.getElementById('historyBody');const historyEmptyEl=document.getElementById('historyEmpty');historyBodyEl.innerHTML='';let dates=Object.keys(b.logs||{}).filter(x=>Number.isFinite(Number(b.logs[x]))).sort();
+ if(dates.length){let rows=[];dates.forEach(x=>rows.push({date:x,pages:b.logs[x]}));rows.forEach(r=>{let before=rows.filter(x=>x.date<=r.date).reduce((s,x)=>s+Number(x.pages),0);let running=Number(b.openingDone??b.done??0)+before;historyBodyEl.insertAdjacentHTML('beforeend',`<tr><td>${r.date.slice(5).replace('-','/')}</td><td>${fmt(r.pages)}</td><td>${fmt(running)}</td><td>${fmt(target(b,r.date))}</td></tr>`)});historyEmptyEl.classList.add('hidden')}else historyEmptyEl.classList.remove('hidden');
+}
+function renderAllHistory(){
+ const body=allHistoryBody;body.innerHTML='';let rows=[];
+ data.books.forEach(b=>Object.entries(b.logs||{}).forEach(([date,pages])=>rows.push({date,name:b.name,pages:Number(pages)})));
+ rows.sort((a,b)=>b.date.localeCompare(a.date)||a.name.localeCompare(b.name,'ja'));
+ if(!rows.length){allHistoryEmpty.classList.remove('hidden');return}allHistoryEmpty.classList.add('hidden');
+ let grouped={};rows.forEach(r=>(grouped[r.date]??=[]).push(r));
+ Object.keys(grouped).sort().reverse().forEach(date=>{let items=grouped[date],total=items.reduce((s,r)=>s+r.pages,0);body.insertAdjacentHTML('beforeend',`<section class="day-group"><div class="day-heading"><strong>${date.replaceAll('-','/')}</strong><strong>合計 ${fmt(total)}ページ</strong></div>${items.map(r=>`<div class="record-row"><span class="record-name">${esc(r.name)}</span><span class="record-pages">${fmt(r.pages)}ページ</span></div>`).join('')}</section>`)});
+}
+function openBookDialog(id=null){editingId=id;let b=id?data.books.find(x=>x.id===id):null;bookDialogTitle.textContent=b?'本の情報を編集':'本を追加';bookName.value=b?.name||'';bookTotal.value=b?.total||'';bookDone.value=b?actual(b):0;startDate.value=b?.start||'2026-11-01';endDate.value=b?.end||'2026-11-14';bookDialog.showModal()}
+function saveBook(){let name=bookName.value.trim(),total=Number(bookTotal.value),done=Number(bookDone.value);if(!name||total<1||done<0||done>total||!startDate.value||!endDate.value||endDate.value<startDate.value){alert('入力内容を確認してください。');return}
+ if(editingId){let b=data.books.find(x=>x.id===editingId);if(done<sumLogs(b)){alert('読了ページ数は、記録済みページ数の合計以上にしてください。');return}Object.assign(b,{name,total,openingDone:done-sumLogs(b),start:startDate.value,end:endDate.value})}else data.books.push({id:crypto.randomUUID(),name,total,openingDone:done,start:startDate.value,end:endDate.value,logs:{}});
+ save();bookDialog.close();render();if(currentId)renderDetail()}
+function syncEntryValue(){let b=data.books.find(x=>x.id===currentId);if(!b)return;entryPages.value=(b.logs||{})[entryDate.value]??''}
+function openEntryDialog(id){currentId=id;entryDate.value=today();syncEntryValue();entryDialog.showModal()}
+entryDate.addEventListener('change',syncEntryValue);
+function saveEntry(){let b=data.books.find(x=>x.id===currentId),d=entryDate.value,n=Number(entryPages.value);if(!b||!d||entryPages.value===''||n<0){alert('入力内容を確認してください。');return}b.logs=b.logs||{};b.logs[d]=n;save();entryDialog.close();render();if(!detail.classList.contains('hidden'))renderDetail();if(!allHistory.classList.contains('hidden'))renderAllHistory()}
+function deleteCurrent(){if(!confirm('この本と記録を削除しますか？'))return;data.books=data.books.filter(b=>b.id!==currentId);save();showHome()}
+render();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(err => console.error('Service Worker registration failed:', err));
+  });
+}
+</script>
+</body>
+</html>
